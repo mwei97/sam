@@ -30,6 +30,32 @@ flags.DEFINE_integer('cutout_length', 16,
                      '16 is used to get SOTA on cifar10/cifar100')
 
 
+def crop_image_augmentation(example: Dict[str, tf.Tensor],
+                            random_crop_pad: int = 4) -> Dict[str, tf.Tensor]:
+  """Applies random crops only.
+
+  Simple data augmentations that are (almost) always used with cifar. Pad the
+  image with `random_crop_pad` before randomly cropping it to its original
+  size.
+
+  Args:
+    example: An example dict containing an image and a label.
+    random_crop_pad: By how many pixels should the image be padded on each side
+      before cropping.
+
+  Returns:
+    An example with the same label and an augmented version of the image.
+  """
+  image, label = example['image'], example['label']
+  image_shape = tf.shape(image)
+  image = tf.pad(
+      image, [[random_crop_pad, random_crop_pad],
+              [random_crop_pad, random_crop_pad], [0, 0]],
+      mode='REFLECT')
+  image = tf.image.random_crop(image, image_shape)
+  return {'image': image, 'label': label}
+
+
 def weak_image_augmentation(example: Dict[str, tf.Tensor],
                             random_crop_pad: int = 4) -> Dict[str, tf.Tensor]:
   """Applies random crops and horizontal flips.

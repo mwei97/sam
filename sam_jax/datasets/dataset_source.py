@@ -90,6 +90,8 @@ class TFDSDatasetSource(DatasetSource):
       example = augmentation.auto_augmentation(example, self._dataset_name)
     if self._augmentation in ['basic', 'autoaugment']:
       example = augmentation.weak_image_augmentation(example)
+    if self._augmentation in ['crop']:
+      example = augmentation.crop_image_augmentation(example)
     return example
 
   def _preprocess_batch(self,
@@ -164,6 +166,7 @@ class CifarDatasetSource(TFDSDatasetSource):
       image_level_augmentations: Augmentations to apply to the images. Should be
         one of:
         * none: No augmentations are applied.
+        * crop: Applies random crops
         * basic: Applies random crops and horizontal translations.
         * autoaugment: Applies the best found policy for Cifar from the
           AutoAugment paper.
@@ -177,7 +180,7 @@ class CifarDatasetSource(TFDSDatasetSource):
         standard size is used (32x32).
     """
     assert name in ['cifar10', 'cifar100']
-    assert image_level_augmentations in ['none', 'basic', 'autoaugment']
+    assert image_level_augmentations in ['crop', 'none', 'basic', 'autoaugment']
     assert batch_level_augmentations in ['none', 'cutout']
     self._image_size = image_size
     self.batch_size = batch_size
