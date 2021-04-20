@@ -52,7 +52,7 @@ flags.DEFINE_string(
     'output_dir', '', 'Directory where the checkpoints and the tensorboard '
     'records should be saved.')
 flags.DEFINE_enum(
-    'image_level_augmentations', 'basic', ['none', 'basic', 'autoaugment',
+    'image_level_augmentations', 'basic', ['crop', 'none', 'basic', 'autoaugment',
                                            'aa-only'],
     'Augmentations applied to the images. Should be `none` for '
     'no augmentations, `basic` for the standard horizontal '
